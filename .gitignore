@@ -1,0 +1,8 @@
+/target/
+/tmp/
+/data/
+/.impeccable/questions/
+/.impeccable/review/
+*.db-shm
+*.db-wal
+
