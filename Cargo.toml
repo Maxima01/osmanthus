@@ -1,0 +1,26 @@
+[workspace]
+resolver = "2"
+members = ["crates/*", "apps/*"]
+default-members = ["apps/cli", "apps/desktop", "apps/service"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[workspace.dependencies]
+anyhow = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+uuid = { version = "1", features = ["v4", "serde"] }
+osmanthus-domain = { path = "crates/domain" }
+osmanthus-engine = { path = "crates/engine" }
+osmanthus-static = { path = "crates/static-analysis" }
+osmanthus-store = { path = "crates/store" }
+osmanthus-telemetry = { path = "crates/telemetry" }
+osmanthus-ipc = { path = "crates/ipc" }
+osmanthus-application = { path = "crates/application" }
+
+[profile.dev]
+debug = 0
+
