@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-13T13:49:02Z",
+  "title": "Design System: Osmanthus desktop",
+  "extensions": {
+    "colorMeta": {
+      "evergreen-shell": {"role": "primary", "displayName": "Evergreen shell"},
+      "sage-workspace": {"role": "neutral", "displayName": "Sage workspace"},
+      "sage-toolbar": {"role": "neutral", "displayName": "Sage toolbar"},
+      "heading-ink": {"role": "neutral", "displayName": "Heading ink"},
+      "body-ink": {"role": "neutral", "displayName": "Body ink"},
+      "secondary-ink": {"role": "neutral", "displayName": "Secondary ink"},
+      "toolbar-ink": {"role": "neutral", "displayName": "Toolbar ink"},
+      "shell-title": {"role": "neutral", "displayName": "Shell title"},
+      "shell-support": {"role": "neutral", "displayName": "Shell support"},
+      "provenance-ground": {"role": "semantic", "displayName": "Provenance ground"},
+      "provenance-ink": {"role": "semantic", "displayName": "Provenance ink"},
+      "error-ground": {"role": "semantic", "displayName": "Error ground"},
+      "error-ink": {"role": "semantic", "displayName": "Error ink"}
+    },
+    "typographyMeta": {
+      "application-name": {"displayName": "Application name", "purpose": "Native workspace identity."},
+      "view-title": {"displayName": "View title", "purpose": "Current task heading."},
+      "section-title": {"displayName": "Section title", "purpose": "Process and evidence areas."},
+      "body": {"displayName": "Body", "purpose": "Default and selectable evidence text."},
+      "shell-caption": {"displayName": "Shell caption", "purpose": "Supporting application description."}
+    },
+    "shadows": [],
+    "motion": [],
+    "breakpoints": [],
+    "native": {
+      "platform": "Windows desktop",
+      "toolkit": "Slint 1.18.1",
+      "style": "Fluent",
+      "source": "apps/desktop/ui/app-window.slint",
+      "normalViewport": {"width": 1180, "height": 820},
+      "minimumViewport": {"width": 900, "height": 680},
+      "webPreviewSupported": false,
+      "limitations": [
+        "HTML and CSS preview strings are intentionally empty: the implementation is native Slint.",
+        "Native control colors, radii, hover, focus, and selection values are owned by Fluent and are not extracted as application tokens.",
+        "No synthesized tonal ramps, web breakpoints, or custom motion values are recorded.",
+        "This is a provisional implementation record, not a user-approved production brand."
+      ]
+    }
+  },
+  "components": [
+    {"name": "Action button", "kind": "button", "description": "Standard Slint Button; disabled while a backend action runs. Native Fluent interaction states.", "html": "", "css": ""},
+    {"name": "Process row", "kind": "button", "refersTo": "process-row", "description": "Checkable native row with Root, Child, or Unresolved label and selected-process binding.", "html": "", "css": ""},
+    {"name": "Evidence detail", "kind": "input", "description": "Read-only word-wrapped Slint TextEdit with selectable source evidence.", "html": "", "css": ""},
+    {"name": "Workspace tabs", "kind": "nav", "description": "Standard Slint TabWidget with five task areas and native selected-tab feedback.", "html": "", "css": ""},
+    {"name": "Provenance band", "kind": "custom", "refersTo": "provenance-band", "description": "Persistent semantic source band distinguishing synthetic, imported, and static evidence.", "html": "", "css": ""},
+    {"name": "Operation status", "kind": "custom", "refersTo": "status-bar", "description": "Normal, progress, cancellation, and error status; failed operations use status-bar-error colors.", "html": "", "css": ""}
+  ],
+  "narrative": {
+    "northStar": "Evidence before verdicts",
+    "overview": "This records the implemented Windows Slint evidence viewer. Evergreen and sage provide a quiet reading field, with amber reserved for source provenance and uncertainty. Standard Fluent controls provide familiar desktop interaction. These are provisional implementation choices, not a user-approved brand system.\n\nThe visual signature is continuity between an application, its stable process identity, and the exact source events behind a review signal. The interface keeps evidence copyable and distinguishes synthetic, imported, and static evidence.",
+    "keyCharacteristics": ["Native controls and a restrained operational layout.", "Persistent provenance and collector status.", "Explicit Root, Child, and Unresolved process labels.", "Read-only, selectable evidence details."],
+    "rules": [
+      {"name": "The Provenance Rule", "body": "Amber identifies evidence source or uncertainty; red identifies a failed operation, not an inferred malware verdict.", "section": "colors"},
+      {"name": "The Readable Identity Rule", "body": "Process IDs, boot IDs, start keys, hashes, and source-event IDs remain readable and copyable text. Display PID values as plain numbers or explicit unavailable states.", "section": "typography"},
+      {"name": "The Working Space Rule", "body": "Size the review list to its actual rows, capped at 76 px, and collapse it when empty so the process and detail panes retain space.", "section": "layout"}
+    ],
+    "dos": ["Do keep synthetic, imported, and static evidence visibly distinguished.", "Do keep stable process identity and source-event IDs with their details.", "Do preserve standard Fluent interaction states and keyboard affordances.", "Do give the scrolling evidence panes the available working space."],
+    "donts": ["Don't use an empty review list to reserve unused vertical space.", "Don't imply that an unresolved process has a known parent.", "Don't turn a review signal or an empty finding list into a safety verdict.", "Don't treat this provisional record as an approved production brand."]
+  }
+}

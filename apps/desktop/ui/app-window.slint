@@ -1,0 +1,201 @@
+import { Button, HorizontalBox, VerticalBox, TabWidget, ListView, TextEdit } from "std-widgets.slint";
+
+export struct EvidenceRow { label: string, detail: string }
+export struct SavedRow { id: string, label: string, kind: string }
+
+export component MainWindow inherits Window {
+    title: "Osmanthus — application evidence";
+    preferred-width: 1180px;
+    preferred-height: 820px;
+    min-width: 900px;
+    min-height: 680px;
+    default-font-family: "Segoe UI";
+    default-font-size: 14px;
+    background: #f3f5f1;
+
+    in property <bool> busy: false;
+    in property <bool> failed: false;
+    in property <string> status: "Opening local evidence storage…";
+    in property <string> session-title: "No recording loaded";
+    in property <string> provenance: "No live collectors • local preliminary build";
+    in property <string> summary: "Load the sample to explore an installer recording, or import your own JSON evidence bundle.";
+    in property <[EvidenceRow]> processes;
+    in property <[EvidenceRow]> timeline;
+    in property <[EvidenceRow]> findings;
+    in property <[SavedRow]> history;
+    in property <string> file-report: "Choose Inspect file to read a local file without running it.\n\nThis preliminary inspection reports SHA-256, PE imports, and embedded ASCII URLs.\n\nAuthenticode, YARA, reputation, and runtime callbacks are later work.";
+    in-out property <int> active-tab: 0;
+    in-out property <int> selected-process: -1;
+    in-out property <string> process-detail: "Select a process to inspect its recorded activity.\n\nProcess identities include a boot ID and start key. A reused PID does not join unrelated processes.";
+    in-out property <string> event-detail: "Select an event or review signal to see its source evidence.";
+    callback load-sample();
+    callback import-recording();
+    callback inspect-file();
+    callback open-saved(string, string);
+    callback refresh-history();
+
+    VerticalLayout {
+        spacing: 0;
+        Rectangle {
+            height: 86px;
+            background: #193c32;
+            HorizontalLayout {
+                padding: 24px;
+                spacing: 20px;
+                VerticalLayout {
+                    Text { text: "Osmanthus"; color: #ffffff; font-size: 25px; font-weight: 600; }
+                    Text { text: "Application evidence workspace"; color: #d1e3d7; font-size: 13px; }
+                }
+                Rectangle { horizontal-stretch: 1; background: transparent; }
+                Text { text: "Collectors offline\nRead-only foundation"; color: #d1e3d7; horizontal-alignment: right; vertical-alignment: center; }
+            }
+        }
+        Rectangle {
+            height: 60px;
+            background: #e5ece4;
+            HorizontalBox {
+                padding-left: 24px;
+                padding-right: 24px;
+                spacing: 10px;
+                Button { text: "Load sample"; enabled: !root.busy; clicked => { root.load-sample(); } }
+                Button { text: "Import recording…"; enabled: !root.busy; clicked => { root.import-recording(); } }
+                Button { text: "Inspect file…"; enabled: !root.busy; clicked => { root.inspect-file(); } }
+                Rectangle { horizontal-stretch: 1; background: transparent; }
+                Text { text: root.busy ? "Working…" : "Files are never launched"; color: #345347; vertical-alignment: center; }
+            }
+        }
+        Rectangle {
+            height: 44px;
+            background: #fff2d7;
+            HorizontalLayout {
+                padding-left: 24px;
+                padding-right: 24px;
+                Text { text: root.active-tab == 2 ? "STATIC INSPECTION · file contents only · runtime behavior unresolved" : root.active-tab < 2 ? root.provenance : "LOCAL FOUNDATION · collectors offline · no containment actions"; color: #654511; vertical-alignment: center; overflow: elide; }
+            }
+        }
+        TabWidget {
+            current-index <=> root.active-tab;
+            Tab {
+                title: "Behavior";
+                VerticalBox {
+                    padding: 20px;
+                    spacing: 14px;
+                    Text { text: root.session-title; font-size: 21px; font-weight: 600; color: #18392f; }
+                    Text { text: root.summary; wrap: word-wrap; color: #33463d; }
+                    HorizontalBox {
+                        spacing: 18px;
+                        VerticalBox {
+                            padding: 0px;
+                            min-width: 260px;
+                            max-width: 340px;
+                            Text { text: "Process tree"; font-size: 16px; font-weight: 600; color: #18392f; }
+                            ListView {
+                                for row[index] in root.processes: Button {
+                                    text: row.label;
+                                    checkable: true;
+                                    checked: root.selected-process == index;
+                                    height: 44px;
+                                    clicked => { root.selected-process = index; root.process-detail = row.detail; }
+                                }
+                            }
+                            if root.processes.length == 0: Text { text: "No process evidence loaded"; color: #56675e; }
+                        }
+                        VerticalBox {
+                            padding: 0px;
+                            horizontal-stretch: 1;
+                            Text { text: "Recorded activity"; font-size: 16px; font-weight: 600; color: #18392f; }
+                            TextEdit { text: root.process-detail; read-only: true; wrap: word-wrap; }
+                        }
+                    }
+                    Text { text: "Review signals"; font-size: 16px; font-weight: 600; color: #18392f; }
+                    ListView {
+                        height: min(76px, root.findings.length * 38px);
+                        for finding in root.findings: Button {
+                            text: finding.label;
+                            height: 38px;
+                            clicked => { root.event-detail = finding.detail; root.active-tab = 1; }
+                        }
+                    }
+                    if root.findings.length == 0: Text { text: "No persistence review signals in the loaded recording. This is not a safety verdict."; color: #56675e; wrap: word-wrap; }
+                }
+            }
+            Tab {
+                title: "Timeline";
+                HorizontalBox {
+                    padding: 20px;
+                    spacing: 18px;
+                    VerticalBox {
+                        padding: 0px;
+                        min-width: 330px;
+                        max-width: 430px;
+                        Text { text: "Evidence timeline"; font-size: 21px; font-weight: 600; color: #18392f; }
+                        ListView {
+                            for event in root.timeline: Button {
+                                text: event.label;
+                                height: 40px;
+                                clicked => { root.event-detail = event.detail; }
+                            }
+                        }
+                    }
+                    TextEdit { text: root.event-detail; read-only: true; wrap: word-wrap; horizontal-stretch: 1; }
+                }
+            }
+            Tab {
+                title: "File inspection";
+                VerticalBox {
+                    padding: 20px;
+                    spacing: 12px;
+                    Text { text: "Known before launch"; font-size: 21px; font-weight: 600; color: #18392f; }
+                    Text { text: "File contents provide clues about capabilities. Embedded URLs are never contacted."; color: #56675e; wrap: word-wrap; }
+                    TextEdit { text: root.file-report; read-only: true; wrap: word-wrap; }
+                }
+            }
+            Tab {
+                title: "Local history";
+                VerticalBox {
+                    padding: 20px;
+                    spacing: 14px;
+                    HorizontalBox {
+                        padding: 0px;
+                        Text { text: "Recordings & inspections"; font-size: 21px; font-weight: 600; color: #18392f; }
+                        Rectangle { horizontal-stretch: 1; background: transparent; }
+                        Button { text: "Refresh"; enabled: !root.busy; clicked => { root.refresh-history(); } }
+                    }
+                    Text { text: "Saved locally. This is analysis history; installed-application discovery is later work."; color: #56675e; wrap: word-wrap; }
+                    ListView {
+                        for item in root.history: Button {
+                            text: item.kind + "   |   " + item.label;
+                            height: 46px;
+                            enabled: !root.busy;
+                            clicked => { root.open-saved(item.id, item.kind); }
+                        }
+                    }
+                    if root.history.length == 0: Text { text: "Nothing saved yet. Load the sample, import a recording, or inspect a file."; color: #56675e; wrap: word-wrap; }
+                }
+            }
+            Tab {
+                title: "Later work";
+                VerticalBox {
+                    padding: 20px;
+                    spacing: 14px;
+                    Text { text: "From replay to live observation"; font-size: 21px; font-weight: 600; color: #18392f; }
+                    TextEdit {
+                        read-only: true;
+                        wrap: word-wrap;
+                        text: "Next: Windows observation\n\nWindows service lifecycle and ETW collectors for process, image, file, registry, DNS, and connection evidence. Boot/start-key correlation, dropped-event health, and telemetry watchdog.\n\nThen: trustworthy analysis\n\nInstaller manifests and USN correlation; Authenticode; deeper PE and embedded payload inspection; YARA-X and Sigma; validated schema mappings and evidence export.\n\nBefore privilege separation ships\n\nHardened named-pipe transport with explicit DACL, client identity checks, local-only access, framing limits, and adversarial tests. The current GUI uses a local development adapter.\n\nThen: containment\n\nReversible quarantine, restore, process-tree response, user confirmation, identity revalidation, and manifest-scoped uninstall.\n\nLater: isolated assurance\n\nSnapshot-protected VM analysis with controlled network egress. Kernel minifilter research belongs only in a test-signing VM.\n\nThis build does not collect host activity or claim antivirus protection. It cannot predict a complete behavior tree before execution.";
+                    }
+                }
+            }
+        }
+        Rectangle {
+            height: 42px;
+            background: root.failed ? #fbe8e2 : #e5ece4;
+            HorizontalLayout {
+                padding-left: 24px;
+                padding-right: 24px;
+                Text { text: root.status; color: root.failed ? #892d20 : #345347; vertical-alignment: center; overflow: elide; }
+            }
+        }
+    }
+}
+

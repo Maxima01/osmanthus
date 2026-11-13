@@ -1,0 +1,11 @@
+[package]
+name = "osmanthus-engine"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+[dependencies]
+anyhow.workspace = true
+osmanthus-domain.workspace = true
+serde.workspace = true
+uuid.workspace = true
+

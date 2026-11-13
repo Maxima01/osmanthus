@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "session": {
+    "id": "678a0d72-693d-4aef-8e04-e413413c9801",
+    "label": "Sample installer walkthrough",
+    "source": "synthetic"
+  },
+  "events": [
+    {"id":"10000000-0000-4000-8000-000000000001","timestamp_ms":0,"process":{"boot_id":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","start_key":1},"kind":{"type":"process_started","pid":4200,"parent":null,"image":"C:\\Sample\\setup.exe","command_line":"setup.exe /install"}},
+    {"id":"10000000-0000-4000-8000-000000000002","timestamp_ms":120,"process":{"boot_id":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","start_key":1},"kind":{"type":"file_created","path":"C:\\Sample\\Northstar\\updater.exe"}},
+    {"id":"10000000-0000-4000-8000-000000000003","timestamp_ms":240,"process":{"boot_id":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","start_key":2},"kind":{"type":"process_started","pid":4204,"parent":{"boot_id":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","start_key":1},"image":"C:\\Sample\\Northstar\\updater.exe","command_line":"updater.exe --first-run"}},
+    {"id":"10000000-0000-4000-8000-000000000004","timestamp_ms":310,"process":{"boot_id":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","start_key":2},"kind":{"type":"module_loaded","path":"C:\\Windows\\System32\\winhttp.dll"}},
+    {"id":"10000000-0000-4000-8000-000000000005","timestamp_ms":420,"process":{"boot_id":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","start_key":2},"kind":{"type":"dns_query","domain":"updates.example.test"}},
+    {"id":"10000000-0000-4000-8000-000000000006","timestamp_ms":510,"process":{"boot_id":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","start_key":2},"kind":{"type":"network_connection","remote":"192.0.2.20","port":443,"protocol":"TCP"}},
+    {"id":"10000000-0000-4000-8000-000000000007","timestamp_ms":720,"process":{"boot_id":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","start_key":2},"kind":{"type":"persistence_changed","location":"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\Northstar","value":"C:\\Sample\\Northstar\\updater.exe"}},
+    {"id":"10000000-0000-4000-8000-000000000008","timestamp_ms":1100,"process":{"boot_id":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","start_key":1},"kind":{"type":"process_exited"}},
+    {"id":"10000000-0000-4000-8000-000000000009","timestamp_ms":1300,"process":{"boot_id":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","start_key":3},"kind":{"type":"process_started","pid":4200,"parent":null,"image":"C:\\Sample\\unrelated-tool.exe","command_line":"unrelated-tool.exe"}}
+  ]
+}
